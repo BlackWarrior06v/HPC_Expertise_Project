@@ -1,0 +1,48 @@
+This was the result for array sizes varying from 1KB to 1GB:
+# size_bytes  size_KB  ns_consecutive  ns_random
+        1024         1       1.435     1.435
+        2048         2       1.435     1.435
+        4096         4       1.374     1.367
+        8192         8       1.357     1.357
+       16384        16       1.357     1.357
+       32768        32       1.361     1.363
+       65536        64       1.358     2.620
+      131072       128       1.358     3.221
+      262144       256       1.358     3.513
+      524288       512       1.358     4.885
+     1048576      1024       1.359     7.274
+     2097152      2048       1.360    14.043
+     4194304      4096       1.360    18.025
+     8388608      8192       1.360    19.552
+    16777216     16384       1.362    24.866
+    33554432     32768       1.384    43.297
+    67108864     65536       1.401    69.807
+   134217728    131072       1.396    84.361
+   268435456    262144       1.406    95.078
+   536870912    524288       1.407     103.511
+  1073741824   1048576       1.407     108.857
+
+Being the frequency of the processor and the sizes of the cache
+Cpu baseMHz:           2300.0000
+CPU max MHz:           3700.0000
+CPU min MHz:           1000.0000
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              1024K
+L3 cache:              25344K
+
+We can see how for the consecutive pointers in memory the time per acces is
+around 5 clock cycles:
+   if frequency = 3700 * 10**6 Hz
+   5 * frequency * 10**9 ns = 1.35 ns
+Even if the size of the array goes beyond the cache. This due to the prefetcher
+that correctly deduce your next memory call and bring it to cache before you ask for it.
+
+The non consecutive pointers case behave as expected. Each call brings a new cache
+line for the respective L2,L3 or RAM if necessary, thus measuring latency.
+
+The reason why the 1KB and 2KB arrays lasts more per acces could be because the CPU
+had not yet increase the frequency to its maximum, then after some iterations the cpu
+release its full power and then the results are the predicted ones.
+
+

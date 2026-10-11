@@ -1,3 +1,14 @@
+In this exercise we want to understand how the memory hierarchy works.
+Specifically, we want to understand the latency, the time it takes to a location
+in memory to go from were it is allocated to the registers.
+
+Given different array sizes (1KB-1GB) we will measure how long does it takes to go
+from one pointer in the array to the next one. There are two ways on which we arrange
+the pointers. The first one is consecutive in memory, so the entry i in the array
+points to the i+1 entry, called consecutive allocation. The second one is a 
+completely random allocation on which the  entry number i can point to any other entry
+on the array, always following a closed permutation.
+
 This was the result for array sizes varying from 1KB to 1GB:
 # size_bytes  size_KB  ns_consecutive  ns_random
         1024         1       1.435     1.435

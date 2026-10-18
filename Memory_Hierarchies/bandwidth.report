@@ -1,0 +1,46 @@
+In this exercise we calculate the final throughtput of a simple arithmetic triad
+for each element of three arrays a,b,c
+	a[i] = b[i] + s*c[i]
+being s a double. The sizes of the arrays vary from 1KB to 512MB. One can be tempted
+to say that the throughtput is exactly the same as for in the past case, on which
+there were no difference on the array size, since the prefetcher is constantly 
+bringing cache lines to the L1. However the problem is different, since now, the 
+prefetcher has to bring lines from the a,b,c arrays, and there is a limit on how
+many petitions can be flying from one level on the memory hierarchy and the next one.
+So we will still see the jumps one the total working set exceeds the sizes of the cache.
+
+Here it is the result:
+# bytes_per_array  working_set_bytes  GB/s_code  GB/s_with_write_allocate
+        1024          3072	52.373      69.830
+        2048          6144	55.150      73.533
+        4096         12288	57.026      76.035
+        8192         24576	57.978      77.304
+       16384         49152	43.051      57.401
+       32768         98304	42.856      57.141
+       65536        196608	43.120      57.493
+      131072        393216	42.935      57.247
+      262144        786432	41.116      54.821
+      524288	   1572864	28.510      38.013
+     1048576	   3145728	26.303      35.071
+     2097152	   6291456	26.265      35.020
+     4194304	  12582912	25.743      34.324
+     8388608	  25165824	20.731      27.642
+    16777216	  50331648	17.698      23.597
+    33554432     100663296	16.490      21.987
+    67108864     201326592	16.110      21.481
+   134217728     402653184	15.964      21.286
+   268435456     805306368	15.924      21.232
+   536870912    1610612736	15.912      21.216
+
+Remembering that the cache sizes are
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              1024K
+L3 cache:              25344K
+
+We can see how there are clear steps when we exceed the size of a memory level.
+It is measured in GB/s because this is not a problem on how fast the FPU can operate
+on the data (which for this case is almost in one cycle) but instead how much memory
+can be provided to the program, in this case the processor is most of the time waiting
+for the data than really operating on it. This is called a memory bound program.
+
